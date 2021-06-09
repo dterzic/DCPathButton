@@ -93,6 +93,8 @@
         _allowSubItemRotation = YES;
         
         _basicDuration = 0.3f;
+
+        _bloomScale = 1.0f;
         
         [self configureDeviceOrientationObserver];
         
@@ -433,7 +435,7 @@
                      }
                      completion:nil];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.basicDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
         // Remove the button items from the superview
         //
@@ -476,10 +478,16 @@
     movingAnimation.duration = self.basicDuration + 0.05f;
     CGPathRelease(path);
     
-    // 3.Merge animation together
+    // 3.Configure scale animation
+    //
+    CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+    scaleAnimation.values = @[@(1.0), [NSNumber numberWithFloat:self.bloomScale]];
+    scaleAnimation.duration = self.basicDuration + 0.05f;
+
+    // 4.Merge animation together
     //
     CAAnimationGroup *animations = [CAAnimationGroup animation];
-    animations.animations = (self.allowSubItemRotation? @[rotationAnimation, movingAnimation] : @[movingAnimation]);
+    animations.animations = (self.allowSubItemRotation? @[rotationAnimation, movingAnimation, scaleAnimation] : @[movingAnimation, scaleAnimation]);
     animations.duration = self.basicDuration + 0.05f;
     
     return animations;
@@ -630,10 +638,16 @@
     movingAnimation.duration = self.basicDuration;
     CGPathRelease(path);
     
-    // 3.Merge two animation together
+    // 3.Configure scale animation
+    //
+    CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+    scaleAnimation.values = @[[NSNumber numberWithFloat:self.bloomScale], @(1.0)];
+    scaleAnimation.duration = self.basicDuration;
+
+    // 4.Merge two animation together
     //
     CAAnimationGroup *animations = [CAAnimationGroup animation];
-    animations.animations = (self.allowSubItemRotation? @[movingAnimation, rotationAnimation] : @[movingAnimation]);
+    animations.animations = (self.allowSubItemRotation? @[movingAnimation, rotationAnimation, scaleAnimation] : @[movingAnimation, scaleAnimation]);
     animations.duration = self.basicDuration;
     animations.delegate = self;
     

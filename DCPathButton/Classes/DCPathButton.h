@@ -139,6 +139,11 @@ typedef NS_ENUM(NSUInteger, kDCPathButtonBloomDirection) {
 @property (assign, nonatomic) CGFloat bloomAngel;
 
 /*!
+ *  `DCPathButton` object's bloom scale. Default value is 1.0.
+ */
+@property (assign, nonatomic) CGFloat bloomScale;
+
+/*!
  *  The center of a `DCPathButton` object's position. The default value positions the `DCPathButton` object in bottom center.
  */
 @property (assign, nonatomic) CGPoint dcButtonCenter;
